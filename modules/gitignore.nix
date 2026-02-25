@@ -1,3 +1,9 @@
-_: {
-  enterShell = builtins.readFile ./gitignore.sh;
+_:
+let
+  managedBlockSh = "${./lib/managed-block.sh}";
+in
+{
+  enterShell = builtins.replaceStrings [ "@DEVENV_BASE_MANAGED_BLOCK_SH@" ] [ managedBlockSh ] (
+    builtins.readFile ./gitignore.sh
+  );
 }

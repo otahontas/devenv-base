@@ -2,7 +2,7 @@
 
 root="${DEVENV_ROOT:-$PWD}"
 # shellcheck disable=SC1091
-source "$root/modules/lib/managed-block.sh"
+source "@DEVENV_BASE_MANAGED_BLOCK_SH@"
 
 nvim_lua="$root/.nvim.lua"
 nvim_block=$'vim.cmd([[set runtimepath+=.nvim]])\nvim.lsp.enable("nixd")\nvim.lsp.enable("bashls")'

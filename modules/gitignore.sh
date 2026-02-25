@@ -2,7 +2,7 @@
 
 root="${DEVENV_ROOT:-$PWD}"
 # shellcheck disable=SC1091
-source "$root/modules/lib/managed-block.sh"
+source "@DEVENV_BASE_MANAGED_BLOCK_SH@"
 
 gitignore="$root/.gitignore"
 gitignore_block=$'.devenv*\n.direnv\n.pre-commit-config.yaml\n.claude/\n.mcp.json\n.pi/mcp.json\ndevenv.local.nix\ndevenv.local.yaml\nresult'
