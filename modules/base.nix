@@ -36,7 +36,6 @@ let
 in
 {
   claude.code.enable = lib.mkDefault true;
-
   enterShell = ''
     root="$DEVENV_ROOT"
     if [ -z "$root" ]; then
@@ -50,9 +49,6 @@ in
 
   packages = [
     treefmtEval.config.build.wrapper
-    pkgs.commitlint
-    pkgs.git
-    pkgs.gitleaks
     tk
   ];
 
@@ -61,24 +57,20 @@ in
     deadnix.enable = true;
     detect-private-keys.enable = true;
     typos.enable = true;
-
     statix = {
       enable = true;
       entry = "${pkgs.statix}/bin/statix check --format errfmt --ignore .devenv,.devenv.*,.direnv .";
       pass_filenames = false;
     };
-
     treefmt = {
       enable = true;
       package = treefmtEval.config.build.wrapper;
     };
-
     commitlint = {
       enable = true;
       stages = [ "commit-msg" ];
       entry = "${pkgs.commitlint}/bin/commitlint --extends @commitlint/config-conventional --edit";
     };
-
     gitleaks = {
       enable = true;
       entry = "${pkgs.gitleaks}/bin/gitleaks protect --staged --verbose";
