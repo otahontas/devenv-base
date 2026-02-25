@@ -19,6 +19,12 @@ ensure_block_at_top() {
     skip == 0 { print }
   ' "$file" >"$tmp_cleaned"
 
+  # Strip leading blank lines so they don't accumulate across runs
+  local tmp_stripped
+  tmp_stripped="$(mktemp)"
+  awk 'NF {found=1} found' "$tmp_cleaned" >"$tmp_stripped"
+  mv "$tmp_stripped" "$tmp_cleaned"
+
   {
     printf '%s\n' "$start_marker"
     printf '%s\n' "$block"
