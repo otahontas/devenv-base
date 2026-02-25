@@ -1,4 +1,4 @@
-# devenv generated files & local overrides
+# devenv-base gitignore start
 .devenv*
 .direnv
 .pre-commit-config.yaml
@@ -7,3 +7,5 @@
 .pi/mcp.json
 devenv.local.nix
 devenv.local.yaml
+result
+# devenv-base gitignore end
