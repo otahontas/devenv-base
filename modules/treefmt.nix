@@ -1,28 +1,46 @@
-{ pkgs, inputs, ... }:
+{
+  pkgs,
+  inputs,
+  lib,
+  config,
+  ...
+}:
 let
   treefmt-nix = import inputs.treefmt-nix;
   treefmtEval = treefmt-nix.evalModule pkgs {
-    projectRootFile = "devenv.nix";
-    settings.global.excludes = [
-      ".envrc"
-      "*.lock"
-      ".devenv*"
-      ".direnv/"
+    imports = [
+      {
+        projectRootFile = "devenv.nix";
+        settings.global.excludes = [
+          ".envrc"
+          "*.lock"
+          ".devenv*"
+          ".direnv/"
+        ];
+        programs = {
+          nixfmt.enable = true;
+          prettier.enable = true;
+          shfmt.enable = true;
+        };
+      }
+      config.devenv-base.treefmt
     ];
-    programs = {
-      nixfmt.enable = true;
-      prettier.enable = true;
-      shfmt.enable = true;
-    };
   };
 in
 {
-  packages = [
-    treefmtEval.config.build.wrapper
-  ];
+  options.devenv-base.treefmt = lib.mkOption {
+    type = lib.types.attrs;
+    default = { };
+  };
 
-  git-hooks.hooks.treefmt = {
-    enable = true;
-    package = treefmtEval.config.build.wrapper;
+  config = {
+    packages = [
+      treefmtEval.config.build.wrapper
+    ];
+
+    git-hooks.hooks.treefmt = {
+      enable = true;
+      package = treefmtEval.config.build.wrapper;
+    };
   };
 }
