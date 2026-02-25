@@ -10,6 +10,7 @@ let
   treefmtEval = treefmt-nix.evalModule pkgs {
     projectRootFile = "devenv.nix";
     settings.global.excludes = [
+      ".envrc"
       "*.lock"
       ".devenv*"
       ".direnv/"
@@ -17,7 +18,7 @@ let
     programs = {
       nixfmt.enable = true;
       prettier.enable = true;
-      taplo.enable = true;
+      shfmt.enable = true;
     };
   };
 
@@ -36,36 +37,13 @@ let
 in
 {
   claude.code.enable = lib.mkDefault true;
-  enterShell = ''
-    root="$DEVENV_ROOT"
-    if [ -z "$root" ]; then
-      root="$PWD"
-    fi
 
-    gitignore="$root/.gitignore"
-    touch "$gitignore"
+  languages = {
+    nix.enable = true;
+    shell.enable = true;
+  };
 
-    gitignore_block=$'# devenv generated files & local overrides\n.devenv*\n.direnv\n.pre-commit-config.yaml\n.claude/\n.mcp.json\n.pi/mcp.json\ndevenv.local.nix\ndevenv.local.yaml'
-
-    if ! awk -v block="$gitignore_block" '
-      BEGIN { content = "" }
-      { content = content $0 ORS }
-      END { exit(index(content, block) > 0 ? 0 : 1) }
-    ' "$gitignore"; then
-      tmp_gitignore="$(mktemp)"
-      printf '%s\n' "$gitignore_block" > "$tmp_gitignore"
-      if [ -s "$gitignore" ]; then
-        printf '\n' >> "$tmp_gitignore"
-        awk '1' "$gitignore" >> "$tmp_gitignore"
-      fi
-      mv "$tmp_gitignore" "$gitignore"
-    fi
-
-    if [ -f "$root/.mcp.json" ]; then
-      mkdir -p "$root/.pi"
-      ln -sfn "$root/.mcp.json" "$root/.pi/mcp.json"
-    fi
-  '';
+  enterShell = builtins.readFile ./enter-shell.sh;
 
   packages = [
     treefmtEval.config.build.wrapper
@@ -81,6 +59,12 @@ in
       enable = true;
       entry = "${pkgs.statix}/bin/statix check --format errfmt --ignore .devenv,.devenv.*,.direnv .";
       pass_filenames = false;
+    };
+
+    shellcheck = {
+      enable = true;
+      entry = "${pkgs.shellcheck}/bin/shellcheck";
+      files = "\\.sh$";
     };
     treefmt = {
       enable = true;
