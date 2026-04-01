@@ -20,6 +20,7 @@
       baseLsps = [
         "nixd"
         "bashls"
+        "lua_ls"
       ];
       allLsps = baseLsps ++ config.devenv-base.nvim.extraLsps;
       lspLines = map (lsp: ''vim.lsp.enable("${lsp}")'') allLsps;
