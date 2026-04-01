@@ -18,20 +18,28 @@
         ".gitignore"
         ".nvim.lua"
         ".pre-commit-config.yaml"
-        ".claude/"
-        ".mcp.json"
         ".pi/mcp.json"
+        ".pi/extensions/post-edit-hook.ts"
         "devenv.local.nix"
         "devenv.local.yaml"
         "result"
       ];
-      allEntries = baseEntries ++ config.devenv-base.gitignore.extraEntries;
-      gitignoreFile = pkgs.writeText "gitignore" (lib.concatStringsSep "\n" allEntries + "\n");
+      gitignoreFile = pkgs.writeText "gitignore" (
+        "### devenv-base gitignore\n"
+        + (lib.concatStringsSep "\n" baseEntries)
+        + "\n"
+        + "### end\n"
+        + (lib.optionalString (config.devenv-base.gitignore.extraEntries != [ ]) (
+          "\n" + lib.concatStringsSep "\n" config.devenv-base.gitignore.extraEntries + "\n"
+        ))
+      );
     in
     {
       enterShell = ''
         if ! cmp -s ${gitignoreFile} "$DEVENV_ROOT/.gitignore"; then
+          chflags nouchg "$DEVENV_ROOT/.gitignore" 2>/dev/null || true
           install -m 444 ${gitignoreFile} "$DEVENV_ROOT/.gitignore"
+          chflags uchg "$DEVENV_ROOT/.gitignore"
         fi
       '';
     };
