@@ -39,6 +39,11 @@ in
       treefmtEval.config.build.wrapper
     ];
 
+    tasks."nix:format" = {
+      description = "Run treefmt formatters";
+      exec = "treefmt -v";
+    };
+
     git-hooks.hooks.treefmt = {
       enable = true;
       package = treefmtEval.config.build.wrapper;
