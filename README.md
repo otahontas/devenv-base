@@ -38,3 +38,23 @@ _: {
   };
 }
 ```
+
+### In GitHub Actions
+
+A reusable composite action installs Nix, configures the Cachix devenv cache, and installs devenv:
+
+```yaml
+- uses: otahontas/devenv-base/.github/actions/setup-devenv@main
+```
+
+Full example:
+
+```yaml
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - uses: otahontas/devenv-base/.github/actions/setup-devenv@main
+      - run: devenv ci
+```
