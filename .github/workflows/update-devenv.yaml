@@ -1,0 +1,35 @@
+name: Update devenv
+
+on:
+  schedule:
+    - cron: "0 8 * * 1" # every monday at 08:00 UTC
+  workflow_dispatch:
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: cachix/install-nix-action@v31
+
+      - uses: cachix/cachix-action@v16
+        with:
+          name: devenv
+
+      - name: Install devenv
+        run: nix profile add nixpkgs#devenv
+
+      - name: Update lock file
+        run: devenv update
+
+      - name: Verify shell builds
+        run: devenv ci
+
+      - name: Create pull request
+        uses: peter-evans/create-pull-request@v7
+        with:
+          commit-message: "chore: update devenv lock file"
+          title: "chore: update devenv lock file"
+          branch: update-devenv
+          delete-branch: true
