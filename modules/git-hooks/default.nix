@@ -5,7 +5,10 @@
     deadnix.enable = true;
     detect-private-keys.enable = true;
     shellcheck.enable = true;
-    typos.enable = true;
+    typos = {
+      enable = true;
+      excludes = [ "\\.tickets/" ];
+    };
     commitlint = {
       enable = true;
       stages = [ "commit-msg" ];
