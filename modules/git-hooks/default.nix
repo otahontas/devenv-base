@@ -17,7 +17,7 @@
     };
     statix = {
       enable = true;
-      entry = "${pkgs.statix}/bin/statix check --format errfmt --ignore .devenv,.devenv.*,.direnv .";
+      entry = "${pkgs.statix}/bin/statix check --format errfmt --ignore .devenv,.devenv.* .";
       pass_filenames = false;
     };
   };

@@ -14,7 +14,6 @@
     let
       baseEntries = [
         ".devenv*"
-        ".direnv"
         ".gitignore"
         ".nvim.lua"
         ".pre-commit-config.yaml"

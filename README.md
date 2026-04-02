@@ -1,10 +1,13 @@
 # devenv-base
 
-Shared [devenv](https://devenv.sh) setup. Bundles languages, formatters, git hooks, neovim config, gitignore management, and AI tooling into one import.
+Shared [devenv](https://devenv.sh) setup. Bundles my base choice of languages, formatters, git hooks, neovim config, gitignore management, and ai tooling.
+
+## Prerequisites
+
+- [devenv](https://devenv.sh) (duh)
 
 ## Install
 
-Add this repo as an input in your `devenv.yaml` and import it:
 ### 1. Create `devenv.yaml`
 
 **All four inputs are required.** `treefmt-nix` and `git-hooks` are peer dependencies consumed directly by devenv-base.
@@ -42,24 +45,24 @@ _: {}
 devenv shell
 ```
 
-That's it. You get all the modules listed below.
+(or by autoactivation)
 
-## What you get
+## Defaults
 
 ### Languages
 
-Nix, shell, and Lua are enabled by default via `languages.*.enable`.
+Nix, shell, and Lua via `languages.*.enable`.
 
 ### Formatters (treefmt)
 
-[nixfmt](https://github.com/NixOS/nixfmt), [prettier](https://github.com/prettier/prettier), [shfmt](https://github.com/mvdan/sh), and [stylua](https://github.com/JohnnyMorganz/StyLua) run on every commit via a treefmt pre-commit hook. Excluded: `.envrc`, `*.lock`, `.devenv*`, `.direnv/`.
+[nixfmt](https://github.com/NixOS/nixfmt), [prettier](https://github.com/prettier/prettier), [shfmt](https://github.com/mvdan/sh), and [stylua](https://github.com/JohnnyMorganz/StyLua) run on every commit via a treefmt pre-commit hook.
 
 ### Git hooks
 
 These hooks run on every commit:
 
 - **check-merge-conflicts** — unresolved conflict markers
-- **deadnix** — unused `let` bindings in Nix
+- **deadnix** — unused Nix stuff
 - **detect-private-keys** — private keys
 - **shellcheck** — shell script lint
 - **typos** — spelling mistakes
@@ -69,21 +72,20 @@ These hooks run on every commit:
 
 ### Neovim
 
-A `.nvim.lua` with LSPs for Nix (nixd), Shell (bashls), and Lua (lua_ls) is symlinked into your project root.
+A `.nvim.lua` with LSPs for Nix (nixd), Shell (bashls), and Lua (lua_ls).
 
 ### Gitignore
 
-A read-only, locked (`chflags uchg`) `.gitignore` covers devenv artifacts, `.nvim.lua`, `.pi/` symlinks, `devenv.local.*`, and `result`.
+A read-only, locked (`chflags uchg`) `.gitignore` covers the base-devenv stuff.
 
-### AI tooling
+### ai tooling
 
-- Claude Code disabled (`claude.code.enable = false`)
 - `.pi/mcp.json` symlinked with devenv MCP server (`mcp.devenv.sh`)
 - `.pi/extensions/post-edit-hook.ts` symlinked — runs `prek` after AI edits
 
 ### `tk` ticket tool
 
-[`tk`](https://github.com/wedow/ticket) v0.3.2 is installed and available in the shell.
+[`tk`](https://github.com/wedow/ticket) for ai markdown ticket setup.
 
 ## Adding a new language
 
@@ -169,17 +171,4 @@ jobs:
       - uses: actions/checkout@v6
       - uses: otahontas/devenv-base/.github/actions/setup-devenv@main
       - run: devenv ci
-```
-
-## Module source
-
-```
-modules/
-├── ai/             # Claude Code off, MCP + post-edit hook for pi
-├── git-hooks/      # Pre-commit hooks (commitlint, gitleaks, etc.)
-├── gitignore/      # Generated, locked .gitignore
-├── languages/      # nix, shell, lua
-├── nvim/           # Generated .nvim.lua with LSPs
-├── tk/             # tk ticket tool
-└── treefmt/        # treefmt wrapper + pre-commit hook
 ```

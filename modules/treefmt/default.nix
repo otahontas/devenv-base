@@ -12,10 +12,8 @@ let
       {
         projectRootFile = "devenv.nix";
         settings.global.excludes = [
-          ".envrc"
           "*.lock"
           ".devenv*"
-          ".direnv/"
         ];
         programs = {
           nixfmt.enable = true;
