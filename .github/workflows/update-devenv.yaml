@@ -11,14 +11,7 @@ jobs:
     steps:
       - uses: actions/checkout@v6
 
-      - uses: cachix/install-nix-action@v31
-
-      - uses: cachix/cachix-action@v17
-        with:
-          name: devenv
-
-      - name: Install devenv
-        run: nix profile add nixpkgs#devenv
+      - uses: otahontas/devenv-base/.github/actions/setup-devenv@main
 
       - name: Update lock file
         run: devenv update
