@@ -10,10 +10,5 @@ in
 {
   claude.code.enable = lib.mkForce false;
 
-  enterShell = ''
-    root="''${DEVENV_ROOT:-$PWD}"
-    mkdir -p "$root/.pi/extensions"
-    ln -sfn ${mcpConfig} "$root/.pi/mcp.json"
-    ln -sfn ${postEditHook} "$root/.pi/extensions/post-edit-hook.ts"
-  '';
+  enterShell = "bash ${./enter-shell.sh} ${mcpConfig} ${postEditHook}";
 }

@@ -34,12 +34,6 @@
       );
     in
     {
-      enterShell = ''
-        if ! cmp -s ${gitignoreFile} "$DEVENV_ROOT/.gitignore"; then
-          chflags nouchg "$DEVENV_ROOT/.gitignore" 2>/dev/null || true
-          install -m 444 ${gitignoreFile} "$DEVENV_ROOT/.gitignore"
-          chflags uchg "$DEVENV_ROOT/.gitignore"
-        fi
-      '';
+      enterShell = "bash ${./enter-shell.sh} ${gitignoreFile}";
     };
 }
