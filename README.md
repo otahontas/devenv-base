@@ -1,10 +1,13 @@
-# otahontas devenv base
+# devenv-base
 
-Shared [devenv](https://devenv.sh) setup used in my public projects. Feel free to use and adapt it.
+Shared [devenv](https://devenv.sh) setup. Bundles languages, formatters, git hooks, neovim config, gitignore management, and AI tooling into one import.
 
-## Usage
+## Install
 
 Add this repo as an input in your `devenv.yaml` and import it:
+### 1. Create `devenv.yaml`
+
+**All four inputs are required.** `treefmt-nix` and `git-hooks` are peer dependencies consumed directly by devenv-base.
 
 ```yaml
 inputs:
@@ -25,21 +28,130 @@ imports:
   - devenv-base
 ```
 
-Then configure the modules in your `devenv.nix`. For example:
+### 2. Create `devenv.nix`
+
+Uses all defaults:
+
+```nix
+_: {}
+```
+
+### 3. Enter the shell
+
+```sh
+devenv shell
+```
+
+That's it. You get all the modules listed below.
+
+## What you get
+
+### Languages
+
+Nix, shell, and Lua are enabled by default via `languages.*.enable`.
+
+### Formatters (treefmt)
+
+[nixfmt](https://github.com/NixOS/nixfmt), [prettier](https://github.com/prettier/prettier), [shfmt](https://github.com/mvdan/sh), and [stylua](https://github.com/JohnnyMorganz/StyLua) run on every commit via a treefmt pre-commit hook. Excluded: `.envrc`, `*.lock`, `.devenv*`, `.direnv/`.
+
+### Git hooks
+
+These hooks run on every commit:
+
+- **check-merge-conflicts** — unresolved conflict markers
+- **deadnix** — unused `let` bindings in Nix
+- **detect-private-keys** — private keys
+- **shellcheck** — shell script lint
+- **typos** — spelling mistakes
+- **commitlint** — [conventional commits](https://www.conventionalcommits.org/)
+- **gitleaks** — secrets in staged files
+- **statix** — Nix anti-patterns
+
+### Neovim
+
+A `.nvim.lua` with LSPs for Nix (nixd), Shell (bashls), and Lua (lua_ls) is symlinked into your project root.
+
+### Gitignore
+
+A read-only, locked (`chflags uchg`) `.gitignore` covers devenv artifacts, `.nvim.lua`, `.pi/` symlinks, `devenv.local.*`, and `result`.
+
+### AI tooling
+
+- Claude Code disabled (`claude.code.enable = false`)
+- `.pi/mcp.json` symlinked with devenv MCP server (`mcp.devenv.sh`)
+- `.pi/extensions/post-edit-hook.ts` symlinked — runs `prek` after AI edits
+
+### `tk` ticket tool
+
+[`tk`](https://github.com/wedow/ticket) v0.3.2 is installed and available in the shell.
+
+## Adding a new language
+
+Add the language, a formatter, and an LSP to your `devenv.nix`:
 
 ```nix
 _: {
-  devenv-base.treefmt = {
-    settings.global.excludes = [ "some-file" ];
-    programs = {
-      shfmt.enable = true;
-      stylua.enable = true;
-    };
-  };
+  # 1. Enable the language (adds python to PATH, venv support, etc.)
+  languages.python.enable = true;
+
+  # 2. Add a formatter
+  devenv-base.treefmt.programs.black.enable = true;
+
+  # 3. Add an LSP
+  devenv-base.nvim.extraLsps = [ "pyright" ];
 }
 ```
 
-### In GitHub Actions
+Swap `python`/`black`/`pyright` for your language. See [devenv language options](https://devenv.sh/reference/options/#languages) and [treefmt-nix programs](https://github.com/numtide/treefmt-nix/tree/master/programs).
+
+## Configuration reference
+
+### `devenv-base.treefmt` (attrset)
+
+Passed to treefmt-nix. Add formatters or change excludes:
+
+```nix
+devenv-base.treefmt = {
+  settings.global.excludes = [
+    "some/generated/file"
+  ];
+  programs = {
+    fish_indent.enable = true;
+    black.enable = true;
+  };
+};
+```
+
+### `devenv-base.nvim.extraLsps` (list of strings)
+
+LSP servers added to `.nvim.lua`:
+
+```nix
+devenv-base.nvim.extraLsps = [ "pyright" "ts_ls" ];
+```
+
+### `devenv-base.nvim.extraConfig` (string)
+
+Neovim config appended after LSP setup:
+
+```nix
+devenv-base.nvim.extraConfig = ''
+  vim.opt.tabstop = 4
+'';
+```
+
+### `devenv-base.gitignore.extraEntries` (list of strings)
+
+Patterns appended to `.gitignore`:
+
+```nix
+devenv-base.gitignore.extraEntries = [
+  "node_modules"
+  "*.pyc"
+];
+```
+
+## GitHub Actions
 
 A reusable composite action installs Nix, configures the Cachix devenv cache, and installs devenv:
 
@@ -57,4 +169,17 @@ jobs:
       - uses: actions/checkout@v6
       - uses: otahontas/devenv-base/.github/actions/setup-devenv@main
       - run: devenv ci
+```
+
+## Module source
+
+```
+modules/
+├── ai/             # Claude Code off, MCP + post-edit hook for pi
+├── git-hooks/      # Pre-commit hooks (commitlint, gitleaks, etc.)
+├── gitignore/      # Generated, locked .gitignore
+├── languages/      # nix, shell, lua
+├── nvim/           # Generated .nvim.lua with LSPs
+├── tk/             # tk ticket tool
+└── treefmt/        # treefmt wrapper + pre-commit hook
 ```
