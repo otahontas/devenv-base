@@ -1,14 +1,24 @@
 {
   lib,
   pkgs,
+  config,
   ...
 }:
 let
-  mcpConfig = pkgs.writeText "mcp.json" (builtins.readFile ./mcp.json);
+  baseServers = (builtins.fromJSON (builtins.readFile ./mcp.json)).mcpServers;
+  merged = baseServers // config.devenv-base.ai.mcp.extraServers;
+  mcpConfig = pkgs.writeText "mcp.json" (builtins.toJSON { mcpServers = merged; });
   postEditHook = pkgs.writeText "post-edit-hook.ts" (builtins.readFile ./post-edit-hook.ts);
 in
 {
-  claude.code.enable = lib.mkForce false;
+  options.devenv-base.ai.mcp.extraServers = lib.mkOption {
+    type = lib.types.attrsOf lib.types.attrs;
+    default = { };
+  };
 
-  enterShell = "bash ${./enter-shell.sh} ${mcpConfig} ${postEditHook}";
+  config = {
+    claude.code.enable = lib.mkForce false;
+
+    enterShell = "bash ${./enter-shell.sh} ${mcpConfig} ${postEditHook}";
+  };
 }
