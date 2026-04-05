@@ -19,7 +19,10 @@ export default function (pi: ExtensionAPI) {
     const devenvRoot = process.env.DEVENV_ROOT ?? ctx.cwd;
     const result = await pi.exec(
       "bash",
-      ["-c", `cd "${devenvRoot}" && prek run --files "${filePath}"`],
+      [
+        "-c",
+        `cd "${devenvRoot}" && devenv shell -- prek run --files "${filePath}"`,
+      ],
       {
         timeout: 30000,
       },
