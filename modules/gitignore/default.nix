@@ -17,11 +17,10 @@
         ".gitignore"
         ".nvim.lua"
         ".pre-commit-config.yaml"
-        ".pi/mcp.json"
-        ".pi/extensions/post-edit-hook.ts"
-        ".pi/agent/AGENTS.md"
+        ".pi"
         "devenv.local.nix"
         "devenv.local.yaml"
+        "lat.md/.cache/"
         "result"
       ];
       gitignoreFile = pkgs.writeText "gitignore" (
