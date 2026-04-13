@@ -19,6 +19,7 @@
         ".pre-commit-config.yaml"
         ".pi/mcp.json"
         ".pi/extensions/post-edit-hook.ts"
+        ".pi/agent/AGENTS.md"
         "devenv.local.nix"
         "devenv.local.yaml"
         "result"

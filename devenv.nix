@@ -8,5 +8,7 @@
     ./modules/ai
     ./modules/nvim
     ./modules/gitignore
+    ./modules/agents-md
+    ./modules/lat-md
   ];
 }
