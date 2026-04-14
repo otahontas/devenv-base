@@ -20,7 +20,6 @@
       baseLsps = [
         "nixd"
         "bashls"
-        "lua_ls"
       ];
       baseLines = [
         "vim.cmd([[set runtimepath+=.nvim]])"

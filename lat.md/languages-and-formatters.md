@@ -1,19 +1,18 @@
 # Languages and formatters
 
-Enables Nix, shell, and Lua by default. Formats on every commit via treefmt.
+Enables Nix and shell by default. Formats on every commit via treefmt.
 
 ## Languages
 
-`modules/languages/default.nix` enables `languages.nix`, `languages.shell`, and `languages.lua`.
+`modules/languages/default.nix` enables `languages.nix` and `languages.shell`.
 
 ## Formatters
 
-`modules/treefmt/default.nix` imports [treefmt-nix](https://github.com/numtide/treefmt-nix) and enables four formatters:
+`modules/treefmt/default.nix` imports [treefmt-nix](https://github.com/numtide/treefmt-nix) and enables three formatters:
 
 - [nixfmt](https://github.com/NixOS/nixfmt) — Nix
 - [prettier](https://github.com/prettier/prettier) — JS/TS/JSON/YAML/Markdown
 - [shfmt](https://github.com/mvdan/sh) — shell
-- [stylua](https://github.com/JohnnyMorganz/StyLua) — Lua
 
 Lock files and `.devenv*` are excluded from formatting.
 

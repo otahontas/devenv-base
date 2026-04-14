@@ -19,7 +19,6 @@ let
           nixfmt.enable = true;
           prettier.enable = true;
           shfmt.enable = true;
-          stylua.enable = true;
         };
       }
       config.devenv-base.treefmt

@@ -6,7 +6,7 @@ Shared [devenv](https://devenv.sh) setup — languages, formatters, git hooks, n
 - [[git-hooks]] — pre-commit hooks
 - [[github-actions]] — CI/CD setup
 - [[gitignore]] — locked gitignore management
-- [[languages-and-formatters]] — Nix, shell, Lua + treefmt
+- [[languages-and-formatters]] — Nix, shell + treefmt
 - [[nvim]] — LSP config generation
 
 ## Module system

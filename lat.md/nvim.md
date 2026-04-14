@@ -4,7 +4,7 @@ Generates `.nvim.lua` with LSP setup. Configured in `modules/nvim/default.nix`.
 
 ## Base LSPs
 
-nixd (Nix), bashls (shell), lua_ls (Lua).
+nixd (Nix), bashls (shell).
 
 ## Options
 
