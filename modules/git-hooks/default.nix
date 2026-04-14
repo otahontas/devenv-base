@@ -4,7 +4,10 @@
     check-merge-conflicts.enable = true;
     deadnix.enable = true;
     detect-private-keys.enable = true;
-    shellcheck.enable = true;
+    shellcheck = {
+      enable = true;
+      entry = "${pkgs.shellcheck}/bin/shellcheck --severity=warning";
+    };
     typos = {
       enable = true;
       excludes = [ "\\.tickets/" ];
