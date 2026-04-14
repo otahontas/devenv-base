@@ -10,7 +10,9 @@ Claude Code is force-disabled.
 
 ## Post-edit hook
 
-`modules/ai/post-edit-hook.ts` is a pi extension that runs `prek` on files after any `edit` or `write` tool call. This keeps staged files passing hook checks even when edited by the agent.
+`modules/ai/post-edit-hook.ts` is a pi extension that runs `prek` on files after any `edit` or `write` tool call. On failure, injects the failing hook names into the tool result so the LLM can fix issues before committing.
+
+Uses `devenv shell --quiet` to suppress setup noise, and reads prek results from stdout (where prek writes them).
 
 ## AGENTS.md
 
