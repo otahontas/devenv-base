@@ -15,9 +15,14 @@ let
     npmDepsHash = "sha256-1n3XaT63b+rFl2KsS4mUz/Y4ko6+bit+a3etHk1r0C4=";
     dontBuild = true;
   };
+
+  skillFile = pkgs.writeText "lat-md-SKILL.md" (builtins.readFile ./SKILL.md);
+  extensionFile = pkgs.writeText "lat.ts" (builtins.readFile ./lat.ts);
 in
 {
   packages = [
     lat-md
   ];
+
+  enterShell = "bash ${./enter-shell.sh} ${skillFile} ${extensionFile}";
 }
