@@ -2,6 +2,7 @@
  * Post-edit hook extension
  *
  * Runs prek hooks on the specific file after any file-mutating tool call.
+ * Injects issues into the tool result so the LLM can fix them before committing.
  */
 
 import type { ExtensionAPI } from "@mariozechner/pi-coding-agent";
@@ -17,19 +18,47 @@ export default function (pi: ExtensionAPI) {
     if (!filePath) return;
 
     const devenvRoot = process.env.DEVENV_ROOT ?? ctx.cwd;
+
+    // Resolve to relative path for prek
+    let relPath = filePath;
+    if (filePath.startsWith(devenvRoot + "/")) {
+      relPath = filePath.slice(devenvRoot.length + 1);
+    }
+
     const result = await pi.exec(
       "bash",
       [
         "-c",
-        `cd "${devenvRoot}" && devenv shell -- prek run --files "${filePath}"`,
+        `cd "${devenvRoot}" && devenv shell --quiet -- prek run --files "${relPath}"`,
       ],
       {
         timeout: 30000,
       },
     );
 
-    if (result.code !== 0 && result.stderr) {
-      ctx.ui.notify(`prek failed: ${result.stderr.slice(0, 200)}`, "warn");
+    if (result.code !== 0) {
+      // prek results are in stdout (devenv --quiet suppresses shell setup noise)
+      const output = (result.stdout || "").trim();
+      const failures = output
+        .split("\n")
+        .filter((line) => line.includes("Failed"))
+        .map((line) => line.trim())
+        .join("\n");
+
+      const msg = failures || output.slice(0, 500);
+
+      ctx.ui.notify(`prek issues: ${msg.slice(0, 300)}`, "warn");
+
+      // Inject into tool result so the LLM sees the issues and can fix them
+      return {
+        content: [
+          ...event.content,
+          {
+            type: "text" as const,
+            text: `⚠️ prek found issues with this file (auto-formatting may have been applied, but some checks failed):\n${msg}`,
+          },
+        ],
+      };
     }
   });
 }
