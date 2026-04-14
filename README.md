@@ -1,10 +1,10 @@
 # devenv-base
 
-Shared [devenv](https://devenv.sh) setup. Bundles my base choice of languages, formatters, git hooks, neovim config, gitignore management, and ai tooling.
+Shared [devenv](https://devenv.sh) setup. Bundles base languages, formatters, git hooks, neovim config, gitignore management, and AI tooling.
 
 ## Prerequisites
 
-- [devenv](https://devenv.sh) (duh)
+- [devenv](https://devenv.sh)
 
 ## Install
 
@@ -45,130 +45,19 @@ _: {}
 devenv shell
 ```
 
-(or by autoactivation)
+## What's included
 
-## Defaults
+See `lat.md/` for full documentation. Briefly:
 
-### Languages
+- **Languages** — Nix, shell, Lua
+- **Formatters** — nixfmt, prettier, shfmt, stylua (via treefmt, runs on commit)
+- **Git hooks** — check-merge-conflicts, deadnix, detect-private-keys, shellcheck, typos, commitlint, gitleaks, statix
+- **Neovim** — `.nvim.lua` with LSPs for Nix, shell, and Lua
+- **Gitignore** — locked `.gitignore` managed by the module
+- **AI tooling** — pi MCP server, post-edit hook, AGENTS.md, lat.md extension
+- **Tickets** — `tk` CLI from [wedow/ticket](https://github.com/wedow/ticket)
+- **GitHub Actions** — reusable setup-devenv action, weekly lock file update
 
-Nix, shell, and Lua via `languages.*.enable`.
+## Configuration
 
-### Formatters (treefmt)
-
-[nixfmt](https://github.com/NixOS/nixfmt), [prettier](https://github.com/prettier/prettier), [shfmt](https://github.com/mvdan/sh), and [stylua](https://github.com/JohnnyMorganz/StyLua) run on every commit via a treefmt pre-commit hook.
-
-### Git hooks
-
-These hooks run on every commit:
-
-- **check-merge-conflicts** — unresolved conflict markers
-- **deadnix** — unused Nix stuff
-- **detect-private-keys** — private keys
-- **shellcheck** — shell script lint
-- **typos** — spelling mistakes
-- **commitlint** — [conventional commits](https://www.conventionalcommits.org/)
-- **gitleaks** — secrets in staged files
-- **statix** — Nix anti-patterns
-
-### Neovim
-
-A `.nvim.lua` with LSPs for Nix (nixd), Shell (bashls), and Lua (lua_ls).
-
-### Gitignore
-
-A read-only, locked (`chflags uchg`) `.gitignore` covers the base-devenv stuff.
-
-### ai tooling
-
-- `.pi/mcp.json` symlinked with devenv MCP server (`mcp.devenv.sh`)
-- `.pi/extensions/post-edit-hook.ts` symlinked — runs `prek` after AI edits
-
-### `tk` ticket tool
-
-[`tk`](https://github.com/wedow/ticket) for ai markdown ticket setup.
-
-## Adding a new language
-
-Add the language, a formatter, and an LSP to your `devenv.nix`:
-
-```nix
-_: {
-  # 1. Enable the language (adds python to PATH, venv support, etc.)
-  languages.python.enable = true;
-
-  # 2. Add a formatter
-  devenv-base.treefmt.programs.black.enable = true;
-
-  # 3. Add an LSP
-  devenv-base.nvim.extraLsps = [ "pyright" ];
-}
-```
-
-Swap `python`/`black`/`pyright` for your language. See [devenv language options](https://devenv.sh/reference/options/#languages) and [treefmt-nix programs](https://github.com/numtide/treefmt-nix/tree/master/programs).
-
-## Configuration reference
-
-### `devenv-base.treefmt` (attrset)
-
-Passed to treefmt-nix. Add formatters or change excludes:
-
-```nix
-devenv-base.treefmt = {
-  settings.global.excludes = [
-    "some/generated/file"
-  ];
-  programs = {
-    fish_indent.enable = true;
-    black.enable = true;
-  };
-};
-```
-
-### `devenv-base.nvim.extraLsps` (list of strings)
-
-LSP servers added to `.nvim.lua`:
-
-```nix
-devenv-base.nvim.extraLsps = [ "pyright" "ts_ls" ];
-```
-
-### `devenv-base.nvim.extraConfig` (string)
-
-Neovim config appended after LSP setup:
-
-```nix
-devenv-base.nvim.extraConfig = ''
-  vim.opt.tabstop = 4
-'';
-```
-
-### `devenv-base.gitignore.extraEntries` (list of strings)
-
-Patterns appended to `.gitignore`:
-
-```nix
-devenv-base.gitignore.extraEntries = [
-  "node_modules"
-  "*.pyc"
-];
-```
-
-## GitHub Actions
-
-A reusable composite action installs Nix, configures the Cachix devenv cache, and installs devenv:
-
-```yaml
-- uses: otahontas/devenv-base/.github/actions/setup-devenv@main
-```
-
-Full example:
-
-```yaml
-jobs:
-  build:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v6
-      - uses: otahontas/devenv-base/.github/actions/setup-devenv@main
-      - run: devenv ci
-```
+All options live under the `devenv-base` namespace. See `lat.md/` for details on extending languages, formatters, LSPs, gitignore entries, and more.
