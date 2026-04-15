@@ -29,7 +29,7 @@ export default function (pi: ExtensionAPI) {
       "bash",
       [
         "-c",
-        `cd "${devenvRoot}" && devenv shell --quiet -- prek run --files "${relPath}"`,
+        `cd "${devenvRoot}" && .devenv/profile/bin/prek run --files "${relPath}"`,
       ],
       {
         timeout: 30000,
