@@ -31,3 +31,4 @@ jobs:
           title: "chore: update devenv lock file"
           branch: update-devenv
           delete-branch: true
+          add-paths: devenv.lock
