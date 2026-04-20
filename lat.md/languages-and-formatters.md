@@ -14,7 +14,7 @@ Enables Nix and shell by default. Formats on every commit via treefmt.
 - [prettier](https://github.com/prettier/prettier) — JS/TS/JSON/YAML/Markdown
 - [shfmt](https://github.com/mvdan/sh) — shell
 
-Lock files and `.devenv*` are excluded from formatting.
+Lock files (`*.lock`, `*.lockb`, `package-lock.json`, `pnpm-lock.yaml`) and `.devenv*` are excluded from formatting.
 
 ## Configuration
 

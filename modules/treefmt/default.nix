@@ -13,7 +13,10 @@ let
         projectRootFile = "devenv.nix";
         settings.global.excludes = [
           "*.lock"
+          "*.lockb"
           ".devenv*"
+          "package-lock.json"
+          "pnpm-lock.yaml"
         ];
         programs = {
           nixfmt.enable = true;
