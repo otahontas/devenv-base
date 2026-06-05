@@ -61,3 +61,10 @@ See `lat.md/` for full documentation. Briefly:
 ## Configuration
 
 All options live under the `devenv-base` namespace. See `lat.md/` for details on extending languages, formatters, LSPs, gitignore entries, and more.
+
+Disable any default module:
+
+```nix
+devenv-base.modules.gitignore.enable = false;
+devenv-base.modules.agents-md.enable = false;
+```

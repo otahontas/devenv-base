@@ -2,9 +2,12 @@
 set -euo pipefail
 
 gitignore_file="$1"
+target="$DEVENV_ROOT/.gitignore"
 
-if ! cmp -s "$gitignore_file" "$DEVENV_ROOT/.gitignore"; then
-  chflags nouchg "$DEVENV_ROOT/.gitignore" 2>/dev/null || true
-  install -m 444 "$gitignore_file" "$DEVENV_ROOT/.gitignore"
-  chflags uchg "$DEVENV_ROOT/.gitignore"
+chflags nouchg "$target" 2>/dev/null || true
+
+if ! cmp -s "$gitignore_file" "$target"; then
+  install -m 644 "$gitignore_file" "$target"
+else
+  chmod 644 "$target"
 fi

@@ -3,19 +3,31 @@
   config,
   ...
 }:
+let
+  moduleCfg = config.devenv-base.modules.nvim;
+  nvimCfg = config.devenv-base.nvim;
+in
 {
-  options.devenv-base.nvim = {
-    extraLsps = lib.mkOption {
-      type = lib.types.listOf lib.types.str;
-      default = [ ];
+  options = {
+    devenv-base.modules.nvim.enable = lib.mkOption {
+      type = lib.types.bool;
+      default = true;
+      description = "Enable .nvim.lua generation.";
     };
-    extraConfig = lib.mkOption {
-      type = lib.types.lines;
-      default = "";
+
+    devenv-base.nvim = {
+      extraLsps = lib.mkOption {
+        type = lib.types.listOf lib.types.str;
+        default = [ ];
+      };
+      extraConfig = lib.mkOption {
+        type = lib.types.lines;
+        default = "";
+      };
     };
   };
 
-  config =
+  config = lib.mkIf moduleCfg.enable (
     let
       baseLsps = [
         "nixd"
@@ -26,8 +38,8 @@
       ]
       ++ map (lsp: ''vim.lsp.enable("${lsp}")'') baseLsps;
       extraLines =
-        map (lsp: ''vim.lsp.enable("${lsp}")'') config.devenv-base.nvim.extraLsps
-        ++ lib.optional (config.devenv-base.nvim.extraConfig != "") config.devenv-base.nvim.extraConfig;
+        map (lsp: ''vim.lsp.enable("${lsp}")'') nvimCfg.extraLsps
+        ++ lib.optional (nvimCfg.extraConfig != "") nvimCfg.extraConfig;
       content =
         "-- ### devenv-base nvim\n"
         + lib.concatStringsSep "\n" baseLines
@@ -37,5 +49,6 @@
     in
     {
       files.".nvim.lua".text = content;
-    };
+    }
+  );
 }

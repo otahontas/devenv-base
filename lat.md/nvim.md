@@ -12,12 +12,14 @@ Two options extend the base config.
 
 - `devenv-base.nvim.extraLsps` — list of LSP server names added on top of the base set.
 - `devenv-base.nvim.extraConfig` — string appended after LSP setup.
+- `devenv-base.modules.nvim.enable` — set to `false` to disable `.nvim.lua` generation.
 
 ```nix
 devenv-base.nvim.extraLsps = [ "pyright" "ts_ls" ];
 devenv-base.nvim.extraConfig = ''
   vim.opt.tabstop = 4
 '';
+devenv-base.modules.nvim.enable = false;
 ```
 
 ## File generation

@@ -19,6 +19,17 @@ Consumer repos reference this flake in `devenv.yaml` and extend options in their
 
 All modules accept options under the `devenv-base` namespace. Consumers override or extend via these options in their own `devenv.nix`.
 
+## Optional modules
+
+Each imported module is enabled by default and can be disabled through `devenv-base.modules.<name>.enable`.
+
+Available module names: `agents-md`, `ai`, `git-hooks`, `gitignore`, `languages`, `lat-md`, `nvim`, `tk`, and `treefmt`.
+
+```nix
+devenv-base.modules.gitignore.enable = false;
+devenv-base.modules.agents-md.enable = false;
+```
+
 ## Adding a new language
 
 Three steps: enable the language, add a formatter, add an LSP.

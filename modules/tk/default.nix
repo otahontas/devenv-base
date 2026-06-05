@@ -1,4 +1,9 @@
-{ pkgs, ... }:
+{
+  lib,
+  pkgs,
+  config,
+  ...
+}:
 let
   tk = pkgs.stdenvNoCC.mkDerivation {
     pname = "tk";
@@ -14,7 +19,15 @@ let
   };
 in
 {
-  packages = [
-    tk
-  ];
+  options.devenv-base.modules.tk.enable = lib.mkOption {
+    type = lib.types.bool;
+    default = true;
+    description = "Enable the tk ticket CLI package.";
+  };
+
+  config = lib.mkIf config.devenv-base.modules.tk.enable {
+    packages = [
+      tk
+    ];
+  };
 }

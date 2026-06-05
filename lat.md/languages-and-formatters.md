@@ -4,7 +4,7 @@ Enables Nix and shell by default. Formats on every commit via treefmt.
 
 ## Languages
 
-`modules/languages/default.nix` enables `languages.nix` and `languages.shell`.
+`modules/languages/default.nix` enables `languages.nix` and `languages.shell`. `devenv-base.modules.languages.enable = false` disables these defaults.
 
 ## Formatters
 
@@ -18,7 +18,9 @@ Lock files (`*.lock`, `*.lockb`, `package-lock.json`, `pnpm-lock.yaml`) and `.de
 
 ## Configuration
 
-`devenv-base.treefmt` — attrset passed to treefmt-nix. Add formatters or change excludes:
+`devenv-base.treefmt` is an attrset passed to treefmt-nix. `devenv-base.modules.treefmt.enable = false` disables the package, task, and hook.
+
+Add formatters or change excludes:
 
 ```nix
 devenv-base.treefmt = {
@@ -32,4 +34,4 @@ devenv-base.treefmt = {
 
 ## Format task
 
-`devenv tasks run nix:format` runs `treefmt -v` outside of git hooks.
+`devenv tasks run nix:format` runs `treefmt -v` outside of git hooks. The treefmt hook is added only when both `treefmt` and `git-hooks` modules are enabled.

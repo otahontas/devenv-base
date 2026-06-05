@@ -2,6 +2,8 @@
 
 Pre-commit hooks that run on every commit. Configured in `modules/git-hooks/default.nix`.
 
+Set `devenv-base.modules.git-hooks.enable = false` to disable all devenv-base hooks.
+
 ## Hooks
 
 Nine hooks run on every commit: check-merge-conflicts, commitlint, deadnix, detect-private-keys, gitleaks, shellcheck, statix, treefmt, typos.

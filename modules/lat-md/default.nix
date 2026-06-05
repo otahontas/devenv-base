@@ -1,4 +1,9 @@
-{ pkgs, ... }:
+{
+  lib,
+  pkgs,
+  config,
+  ...
+}:
 let
   version = "0.11.0";
   src = pkgs.fetchurl {
@@ -20,9 +25,17 @@ let
   extensionFile = pkgs.writeText "lat.ts" (builtins.readFile ./lat.ts);
 in
 {
-  packages = [
-    lat-md
-  ];
+  options.devenv-base.modules.lat-md.enable = lib.mkOption {
+    type = lib.types.bool;
+    default = true;
+    description = "Enable lat.md CLI and pi extension setup.";
+  };
 
-  enterShell = "bash ${./enter-shell.sh} ${skillFile} ${extensionFile}";
+  config = lib.mkIf config.devenv-base.modules.lat-md.enable {
+    packages = [
+      lat-md
+    ];
+
+    enterShell = "bash ${./enter-shell.sh} ${skillFile} ${extensionFile}";
+  };
 }

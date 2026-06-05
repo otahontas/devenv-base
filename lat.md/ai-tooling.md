@@ -4,7 +4,7 @@ Sets up pi (coding agent) integrations: MCP server, post-edit hook, AGENTS.md, a
 
 ## Symlink cleanup
 
-Each `enter-shell.sh` uses `safe_ln` instead of bare `ln -sfn`. Before creating a symlink, it removes the old one and any macOS " 2", " 3" duplicates (e.g., `AGENTS 2.md`).
+Pi file modules use `safe_ln` instead of bare `ln -sfn`. Before creating a symlink, it removes the old one and any macOS " 2", " 3" duplicates.
 
 ## MCP server
 
@@ -12,7 +12,7 @@ Each `enter-shell.sh` uses `safe_ln` instead of bare `ln -sfn`. Before creating 
 
 The default server is `mcp.devenv.sh` (HTTP). Consumers add servers via `devenv-base.ai.mcp.extraServers`.
 
-Claude Code is force-disabled.
+Claude Code is force-disabled. `devenv-base.modules.ai.enable = false` disables this module.
 
 ## Post-edit hook
 
@@ -22,9 +22,9 @@ Invokes prek directly via `.devenv/profile/bin/prek` (avoids devenv shell overhe
 
 ## AGENTS.md
 
-`modules/agents-md/default.nix` symlinks `modules/agents-md/BASE_AGENTS.md` to `.pi/agent/AGENTS.md` via `enter-shell.sh`.
+`modules/agents-md/default.nix` writes generated `AGENTS.md` to the repo root via `enter-shell.sh`.
 
-Contains base agent instructions for devenv, tickets, and lat.md workflow. Consumers append entries via `devenv-base.agents-md.extraEntries`.
+Contains base agent instructions for devenv, tickets, and lat.md workflow. Consumers append entries via `devenv-base.agents-md.extraEntries`. The script removes the old `.pi/agent/AGENTS.md` symlink if present. `devenv-base.modules.agents-md.enable = false` disables it.
 
 ## lat.md extension
 
@@ -33,6 +33,8 @@ Contains base agent instructions for devenv, tickets, and lat.md workflow. Consu
 - `modules/lat-md/SKILL.md` → `.pi/skills/lat-md/SKILL.md` — authoring guide for lat.md files
 - `modules/lat-md/lat.ts` → `.pi/extensions/lat.ts` — pi extension that registers lat tools (`lat_search`, `lat_section`, `lat_locate`, `lat_check`, `lat_expand`, `lat_refs`) and injects a pre-work reminder and post-work `lat check`.
 
+`devenv-base.modules.lat-md.enable = false` disables this module.
+
 ## Ticket tool
 
-`modules/tk/default.nix` installs `tk` (v0.3.2) from [wedow/ticket](https://github.com/wedow/ticket). Provides CLI ticket and task management.
+`modules/tk/default.nix` installs `tk` (v0.3.2) from [wedow/ticket](https://github.com/wedow/ticket). Provides CLI ticket and task management. `devenv-base.modules.tk.enable = false` disables it.

@@ -4,13 +4,25 @@
   config,
   ...
 }:
+let
+  moduleCfg = config.devenv-base.modules.gitignore;
+  gitignoreCfg = config.devenv-base.gitignore;
+in
 {
-  options.devenv-base.gitignore.extraEntries = lib.mkOption {
-    type = lib.types.listOf lib.types.str;
-    default = [ ];
+  options = {
+    devenv-base.modules.gitignore.enable = lib.mkOption {
+      type = lib.types.bool;
+      default = true;
+      description = "Enable .gitignore generation.";
+    };
+
+    devenv-base.gitignore.extraEntries = lib.mkOption {
+      type = lib.types.listOf lib.types.str;
+      default = [ ];
+    };
   };
 
-  config =
+  config = lib.mkIf moduleCfg.enable (
     let
       baseEntries = [
         ".devenv*"
@@ -20,7 +32,8 @@
         ".pi"
         "devenv.local.nix"
         "devenv.local.yaml"
-        "lat.md/.cache/"
+        "lat.md/.cache/*"
+        "!lat.md/.cache/lat_init.json"
         "result"
       ];
       gitignoreFile = pkgs.writeText "gitignore" (
@@ -28,12 +41,13 @@
         + (lib.concatStringsSep "\n" baseEntries)
         + "\n"
         + "### end\n"
-        + (lib.optionalString (config.devenv-base.gitignore.extraEntries != [ ]) (
-          "\n" + lib.concatStringsSep "\n" config.devenv-base.gitignore.extraEntries + "\n"
+        + (lib.optionalString (gitignoreCfg.extraEntries != [ ]) (
+          "\n" + lib.concatStringsSep "\n" gitignoreCfg.extraEntries + "\n"
         ))
       );
     in
     {
       enterShell = "bash ${./enter-shell.sh} ${gitignoreFile}";
-    };
+    }
+  );
 }
