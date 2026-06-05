@@ -54,7 +54,7 @@ See `lat.md/` for full documentation. Briefly:
 - **Git hooks** — check-merge-conflicts, deadnix, detect-private-keys, shellcheck, typos, commitlint, gitleaks, statix
 - **Neovim** — `.nvim.lua` with LSPs for Nix, shell, and Lua
 - **Gitignore** — locked `.gitignore` managed by the module
-- **AI tooling** — pi MCP server, post-edit hook, AGENTS.md, lat.md extension
+- **AI tooling** — pi MCP server, post-edit hook, AGENTS.md, lat.md CLI
 - **Tickets** — `tk` CLI from [wedow/ticket](https://github.com/wedow/ticket)
 - **GitHub Actions** — reusable setup-devenv action, weekly lock file update
 

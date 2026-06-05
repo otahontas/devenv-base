@@ -1,6 +1,6 @@
 # AI tooling
 
-Sets up pi (coding agent) integrations: MCP server, post-edit hook, AGENTS.md, and lat.md extension.
+Sets up pi (coding agent) integrations, generated AGENTS.md instructions, and the lat.md CLI.
 
 ## Symlink cleanup
 
@@ -24,14 +24,13 @@ Invokes prek directly via `.devenv/profile/bin/prek` (avoids devenv shell overhe
 
 `modules/agents-md/default.nix` writes generated `AGENTS.md` to the repo root via `enter-shell.sh`.
 
-Contains base agent instructions for devenv, tickets, and lat.md workflow. Consumers append entries via `devenv-base.agents-md.extraEntries`. The script removes the old `.pi/agent/AGENTS.md` symlink if present. `devenv-base.modules.agents-md.enable = false` disables it.
+Contains base agent instructions for devenv and tickets only. It leaves lat.md workflow text to `lat init`, which edits repo-local agent instructions. Consumers append entries via `devenv-base.agents-md.extraEntries`. The script removes the old `.pi/agent/AGENTS.md` symlink if present. `devenv-base.modules.agents-md.enable = false` disables it.
 
-## lat.md extension
+## lat.md CLI
 
-`modules/lat-md/default.nix` installs the `lat` CLI (v0.11.0) and symlinks two files into `.pi/` via `enter-shell.sh`:
+`modules/lat-md/default.nix` installs the `lat` CLI (v0.11.0) only. It has no `enterShell` hook and ships no Pi skill or extension templates.
 
-- `modules/lat-md/SKILL.md` → `.pi/skills/lat-md/SKILL.md` — authoring guide for lat.md files
-- `modules/lat-md/lat.ts` → `.pi/extensions/lat.ts` — pi extension that registers lat tools (`lat_search`, `lat_section`, `lat_locate`, `lat_check`, `lat_expand`, `lat_refs`) and injects a pre-work reminder and post-work `lat check`.
+`lat init` owns repo-local agent integration files such as `.pi/extensions/lat.ts`, `.pi/skills/lat-md/SKILL.md`, and lat.md workflow text in `AGENTS.md`. Keeping these files writable avoids Nix-store symlink collisions.
 
 `devenv-base.modules.lat-md.enable = false` disables this module.
 

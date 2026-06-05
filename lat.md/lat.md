@@ -2,7 +2,7 @@
 
 Shared [devenv](https://devenv.sh) setup — languages, formatters, git hooks, neovim config, gitignore management, and AI tooling. Consumed by other repos as a flake input.
 
-- [[ai-tooling]] — pi integrations: MCP, post-edit hook, AGENTS.md, lat.md extension, tk
+- [[ai-tooling]] — pi integrations: MCP, post-edit hook, AGENTS.md, lat.md CLI, tk
 - [[git-hooks]] — pre-commit hooks
 - [[github-actions]] — CI/CD setup
 - [[gitignore]] — locked gitignore management
